@@ -3,4 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="bt_not_supported">Bluetooth not supported</string>
+    <string name="bt_ads_not_supported">Bluetooth Advertisments are not supported on this device</string>
+    <string name="bt_not_enabled_leaving">User declined to enable Bluetooth, exit the app</string>
+    <string name="refresh">Refresh</string>
 </resources>

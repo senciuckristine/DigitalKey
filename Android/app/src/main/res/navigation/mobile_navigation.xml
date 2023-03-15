@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.digitalkey.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
@@ -22,4 +22,11 @@
         android:name="com.example.digitalkey.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_bluetoothconnection"
+        android:name="com.example.digitalkey.ui.bluetoothconnection.BluetoothConnectionFragment"
+        android:label="Bluetooth Connection"
+        tools:layout="@layout/fragment_bluetoothconnection" />
+
 </navigation>
