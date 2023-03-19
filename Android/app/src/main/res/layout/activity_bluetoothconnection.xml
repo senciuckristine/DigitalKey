@@ -11,6 +11,7 @@
     android:orientation="vertical"
     android:gravity="bottom"
     tools:context=".BluetoothConnection">
+    <ListView android:id="@+id/listView1" android:layout_height="wrap_content" android:layout_width="match_parent"></ListView>
 
     <TextView
         android:id="@+id/statusBluetooth"
@@ -44,18 +45,28 @@
         android:text="Turn Off"
         style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
     <Button
-        android:id="@+id/ButtonDevices"
+        android:id="@+id/ButtonDiscoverable"
         android:layout_marginLeft="85dp"
         android:minWidth="200dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Devices"
+        android:text="Discoverable"
         style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
+    <Button
+        android:id="@+id/ButtonDevices"
+        android:layout_marginLeft="85dp"
+        android:minWidth="200dp"
+        android:onClick="discoverDevices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Devices"
+        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+        tools:ignore="ExtraText" />
     <TextView
         android:scrollbars = "vertical"
         android:id="@+id/ShowBLEDevices"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="10dp"
         android:minWidth="200dp"
         android:text=""
 
