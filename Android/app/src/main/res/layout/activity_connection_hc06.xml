@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:scrollbars = "vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="bottom"
+    tools:context=".BluetoothConnection">
+
+    <Button
+        android:id="@+id/ConnectHC06"
+        android:layout_marginLeft="85dp"
+        android:minWidth="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect to HC06" />
+
+    <Button
+        android:id="@+id/ledOn"
+        android:layout_marginLeft="85dp"
+        android:minWidth="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turn Led ON" />
+
+    <Button
+        android:id="@+id/ledOff"
+        android:layout_marginLeft="85dp"
+        android:minWidth="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turn Led OFF" />
+
+    <Button
+        android:id="@+id/Disconnect"
+        android:layout_marginLeft="85dp"
+        android:minWidth="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="Disconnect" />
+
+</LinearLayout>

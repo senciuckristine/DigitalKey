@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,17 +39,24 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 
 public class BluetoothConnection extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 0;
     private static final int REQUEST_DISCOVER_BT = 1;
+    private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9634FB");
+    private BluetoothSocket btSocket = null;
+    private String address = null;
     TextView mStatusBluetooth, mBluetoothDevices;
     ImageView mBluetoothImage;
-    Button mButtonOn, mButtonOff, mButtonDiscover, mButtonListOfDevices;
+    Button mButtonOn, mButtonOff, mButtonDiscover, mButtonListOfDevices,mButtonConnect;
     BluetoothAdapter mBleAdapter;
     ArrayAdapter<String> arrayAdapter;
     ArrayList arrayList ;
@@ -81,14 +90,15 @@ public class BluetoothConnection extends AppCompatActivity {
         });
         mBleAdapter = BluetoothAdapter.getDefaultAdapter();
         mStatusBluetooth = findViewById(R.id.statusBluetooth);
-        mBluetoothDevices = findViewById(R.id.ShowBLEDevices);
+        //mBluetoothDevices = findViewById(R.id.ShowBLEDevices);
         mBluetoothImage = findViewById(R.id.bluetoothImg);
         mButtonOn = findViewById(R.id.ButtonOn);
         mButtonOff = findViewById(R.id.ButtonOff);
         mButtonDiscover = findViewById(R.id.ButtonDiscoverable);
         mButtonListOfDevices = findViewById(R.id.ButtonDevices);
         Deviceslist = findViewById(R.id.listView1);
-        
+        mButtonConnect = findViewById(R.id.ButtonConnect);
+
         arrayList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
         Deviceslist.setAdapter(arrayAdapter);
@@ -164,10 +174,9 @@ public class BluetoothConnection extends AppCompatActivity {
                             // to handle the case where the user grants the permission. See the documentation
                             // for ActivityCompat#requestPermissions for more details.
                             mBleAdapter.disable();
-                            Set<BluetoothDevice> devices = mBleAdapter.getBondedDevices();
-                            for (BluetoothDevice device : devices) {
-                                mBluetoothDevices.setText(" ");
-                            }
+                            arrayList.clear();
+                            arrayAdapter.notifyDataSetChanged();
+                            mButtonConnect.setVisibility(View.INVISIBLE);
                             showToast("Turning off...");
                             mBluetoothImage.setImageResource(R.drawable.ic_action_off);
                         }
@@ -175,6 +184,7 @@ public class BluetoothConnection extends AppCompatActivity {
                 }
             }
         });
+
 //        mButtonListOfDevices.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View V) {
@@ -221,9 +231,21 @@ public class BluetoothConnection extends AppCompatActivity {
         if (mBleAdapter.isEnabled()) {
             showToast("Scanning Devices");
             mBleAdapter.startDiscovery();
+
+            mButtonConnect.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    openNewActivity();
+                }
+            });
         }else{
             showToast("You need to turn on Bluetooth");
         }
+    }
+    public void openNewActivity(){
+        Intent intent = new Intent(this, ConnectionHC06.class);
+        startActivity(intent);
     }
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
@@ -232,11 +254,20 @@ public class BluetoothConnection extends AppCompatActivity {
             String action = intent.getAction();
             if(BluetoothDevice.ACTION_FOUND.equals(action)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                arrayList.add(device.getName());
-                arrayAdapter.notifyDataSetChanged();
+                if(device != null && device.getName() !=null) {
+                    arrayList.add(device.getName() + " " + device.getAddress());
+                    arrayAdapter.notifyDataSetChanged();
+                    if(device.getName().equals("HC-06") && device.getAddress().equals("00:22:02:01:35:EB")){
+                        mButtonConnect.setVisibility(View.VISIBLE);
+                        address = device.getAddress();
+                    }
+
+                }
             }
         }
     };
+
+
     @Override
     protected void onStart(){
         super.onStart();
