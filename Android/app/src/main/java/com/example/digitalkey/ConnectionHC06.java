@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.digitalkey.Protocol.Protocol;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
@@ -63,6 +64,9 @@ public class ConnectionHC06 extends AppCompatActivity {
 
         }
 
+        String data="10010010";
+        Protocol.decode(data);
+
 
         mButtonConnectHC06.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +93,7 @@ public class ConnectionHC06 extends AppCompatActivity {
             public void onClick(View v) {
 
                 MyConexionBT.write("0");
+                MyConexionBT.read();
             }
         });
 
@@ -202,6 +207,21 @@ public class ConnectionHC06 extends AppCompatActivity {
             }
         }
 
+        public void read() {
+            // delegate to Protocol class
+            byte[] data = new byte[256];
+            try {
+
+                mmInStream.read(data);
+                Protocol.decode(new String(data));
+
+
+            } catch (IOException e) {
+                //si no es posible enviar datos se cierra la conexión
+                Toast.makeText(getBaseContext(), "Connection failed", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
 
 
     }
