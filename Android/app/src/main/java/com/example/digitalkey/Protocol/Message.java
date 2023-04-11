@@ -4,7 +4,7 @@ public class Message {
 
     private static byte[] content = new byte[4];
 
-    enum messageType {
+    public enum messageType {
         GET_STATUS,
         LOCK,
         UNLOCK,
@@ -12,7 +12,7 @@ public class Message {
         STATUS_UNLOCK
     }
 
-    static byte[] createMessaje(messageType type){
+    public static byte[] createMessaje(messageType type){
         switch(type){
             case GET_STATUS:
                 content[0] = 0x01 ;

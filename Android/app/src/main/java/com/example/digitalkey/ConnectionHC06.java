@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.digitalkey.Protocol.Message;
 import com.example.digitalkey.Protocol.Protocol;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -92,7 +93,11 @@ public class ConnectionHC06 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                MyConexionBT.write("0");
+                byte[] message_GET_STATUS = Message.createMessaje(Message.messageType.GET_STATUS);
+
+                String str = message_GET_STATUS.toString() ;
+                
+                MyConexionBT.write(message_GET_STATUS.toString());
                 MyConexionBT.read();
             }
         });

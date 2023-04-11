@@ -1,6 +1,8 @@
 package com.example.digitalkey.Protocol;
 
 
+import com.example.digitalkey.Utils;
+
 import java.util.stream.IntStream;
 
 public class Protocol {
@@ -14,22 +16,26 @@ public class Protocol {
     private static byte[] message_STATUS_UNLOCK = Message.createMessaje(Message.messageType.STATUS_UNLOCK);
 
 
+
     // function decode for receiving a message from arduino
     public static void decode(String data){
-        // convert from String to byte[]
-        byte[] byteArray = data.getBytes();
+        // convert from String to byte in hex
+        byte byte1 = Utils.hexToByte(data.substring(0,2));
+        byte byte2 = Utils.hexToByte(data.substring(2,4));
+        byte byte3 = Utils.hexToByte(data.substring(4,6));
+        byte byte4 = Utils.hexToByte(data.substring(6,8));
 
         // compare the first 3 bytes as first action
-        if(byteArray[0] == message_STATUS_LOCK[0] && byteArray[1] == message_STATUS_LOCK[1]
-                && byteArray[2] == message_STATUS_LOCK[2]){
-                // if match then compare the last byte
-                 if(byteArray[3] == message_STATUS_LOCK[3]){ //lock status
-                    // lock command received
-                     // schimb mesajul pe buton in comanda toggle
-                 }else if(byteArray[3] == message_STATUS_UNLOCK[3]){    //unlock status
-                    // unlock command received
-                     // schimb mesajul pe buton in comanda toggle
-                 }
+        if(byte1 == message_STATUS_LOCK[0] && byte2 == message_STATUS_LOCK[1]
+                && byte3 == message_STATUS_LOCK[2]){
+            // if match then compare the last byte
+            if(byte4 == message_STATUS_LOCK[3]){ //lock status
+                // lock command received
+                // schimb mesajul pe buton in comanda toggle
+            }else if(byte4 == message_STATUS_UNLOCK[3]){    //unlock status
+                // unlock command received
+                // schimb mesajul pe buton in comanda toggle
+            }
         }
         else{
             // else is not for us the message received

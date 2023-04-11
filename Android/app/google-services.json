@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "647741837829",
+    "project_id": "digitalkey-b9dc2",
+    "storage_bucket": "digitalkey-b9dc2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647741837829:android:59249d54862861b696826c",
+        "android_client_info": {
+          "package_name": "com.example.digitalkey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647741837829-c01roig3vlupthu0lvp81q65obs61m98.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMJ1Edr9i89qFKsxbAjLlbQSO5WTtu3-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647741837829-4k4nvvh6vo5jpjouk3m8e2qamitoqov1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
