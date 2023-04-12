@@ -257,7 +257,7 @@ public class BluetoothConnection extends AppCompatActivity {
                 if(device != null && device.getName() !=null) {
                     arrayList.add(device.getName() + " " + device.getAddress());
                     arrayAdapter.notifyDataSetChanged();
-                    if(device.getName().equals("HC-06") && device.getAddress().equals("00:22:02:01:35:EB")){
+                    if(device.getName().equals("HC-06") && device.getAddress().equals("00:22:02:01:2F:0F")){
                         mButtonConnect.setVisibility(View.VISIBLE);
                         address = device.getAddress();
                     }

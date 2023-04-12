@@ -33,12 +33,18 @@ void loop() {
      //Print the message (or do other things)
      Serial.println(message);
      Serial.println("nimic");
+      if(strcmp(message,"01101000") == 0)
+       {
+          digitalWrite(ledPin,HIGH);
+       }
+      if(strcmp(message,"01101100") == 0)
+      {
+          digitalWrite(ledPin,LOW);
+      }
+
      //Reset for the next message
      message_pos = 0;
    }
-   if(strcmp(message,"01101000") == 0)
-   {
-     digitalWrite(ledPin,HIGH);
-   }
+  
  }
 }

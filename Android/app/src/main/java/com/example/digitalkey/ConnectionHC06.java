@@ -23,6 +23,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -53,7 +54,6 @@ public class ConnectionHC06 extends AppCompatActivity {
 
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
-
         @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDeveicesList = btAdapter.getBondedDevices();
 
         for(BluetoothDevice pairedDevice : pairedDeveicesList){
@@ -65,10 +65,11 @@ public class ConnectionHC06 extends AppCompatActivity {
 
         }
 
-        String data="10010010";
-        Protocol.decode(data);
+        //String data="10010010";
+        //Protocol.decode(data);
 
-
+        byte[] message_LOCK = {0} ;
+        byte[] message_UNLOCK ={0};
         mButtonConnectHC06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +86,28 @@ public class ConnectionHC06 extends AppCompatActivity {
         mButtonLedOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyConexionBT.write("1");
+                 byte[] message_LOCK = Message.createMessaje(Message.messageType.LOCK);
+                String v5 = Arrays.toString(message_LOCK);
+                String v4= v5.replaceAll(" ","");
+                String[] v1 =  v4.substring(1, v4.length() - 1).split(",");
+
+                for(int i=0;i<v1.length;i++) {
+                    if(v1[i].equals("1")) {
+                        v1[i]="01";
+                    }
+                    if(v1[i].equals("0")) {
+                        v1[i]="00";
+                    }
+                    if(v1[i].equals("16")) {
+                        v1[i]="10";
+                    }
+                    if(v1[i].equals("17")) {
+                        v1[i]="11";
+                    }
+                }
+                String v2 = Utils.convertStringArrayToString(v1);
+                MyConexionBT.write(v2);
+                //MyConexionBT.write("01101000");
 
             }
         });
@@ -94,11 +116,30 @@ public class ConnectionHC06 extends AppCompatActivity {
             public void onClick(View v) {
 
                 byte[] message_GET_STATUS = Message.createMessaje(Message.messageType.GET_STATUS);
+                byte[] message_UNLOCK = Message.createMessaje(Message.messageType.UNLOCK);
 
-                String str = message_GET_STATUS.toString() ;
-                
-                MyConexionBT.write(message_GET_STATUS.toString());
-                MyConexionBT.read();
+                String v5 = Arrays.toString(message_UNLOCK);
+                String v4= v5.replaceAll(" ","");
+                String[] v1 =  v4.substring(1, v4.length() - 1).split(",");
+
+                for(int i=0;i<v1.length;i++) {
+                    if(v1[i].equals("1")) {
+                        v1[i]="01";
+                    }
+                    if(v1[i].equals("0")) {
+                        v1[i]="00";
+                    }
+                    if(v1[i].equals("16")) {
+                        v1[i]="10";
+                    }
+                    if(v1[i].equals("17")) {
+                        v1[i]="11";
+                    }
+                }
+                String v2 = Utils.convertStringArrayToString(v1);
+                MyConexionBT.write(v2);
+                //MyConexionBT.write("01101100");
+               // MyConexionBT.read();
             }
         });
 
@@ -188,11 +229,10 @@ public class ConnectionHC06 extends AppCompatActivity {
             // Se mantiene en modo escucha para determinar el ingreso de datos
             while (true) {
                 try {
-
                     bytes = mmInStream.read(buffer);
                     String readMessage = new String(buffer, 0, bytes);
                     // Envia los datos obtenidos hacia el evento via handler
-                    bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                    //bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
                 } catch (IOException e) {
                     break;
                 }
@@ -212,21 +252,21 @@ public class ConnectionHC06 extends AppCompatActivity {
             }
         }
 
-        public void read() {
-            // delegate to Protocol class
-            byte[] data = new byte[256];
-            try {
-
-                mmInStream.read(data);
-                Protocol.decode(new String(data));
-
-
-            } catch (IOException e) {
-                //si no es posible enviar datos se cierra la conexión
-                Toast.makeText(getBaseContext(), "Connection failed", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
+//        public void read() {
+//            // delegate to Protocol class
+//            byte[] data = new byte[256];
+//            try {
+//
+//                mmInStream.read(data);
+//                Protocol.decode(new String(data));
+//
+//
+//            } catch (IOException e) {
+//                //si no es posible enviar datos se cierra la conexión
+//                Toast.makeText(getBaseContext(), "Connection failed", Toast.LENGTH_LONG).show();
+//                finish();
+//            }
+//        }
 
 
     }

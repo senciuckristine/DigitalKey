@@ -15,4 +15,11 @@ public class Utils {
         int secondDigit = toDigit(hexString.charAt(1));
         return (byte) ((firstDigit << 4) + secondDigit);
     }
+    public static String convertStringArrayToString(String[] strarr) {
+        StringBuilder sb = new StringBuilder();
+        for(String str: strarr) {
+            sb.append(str);
+        }
+        return sb.substring(0,sb.length());
+    }
 }
