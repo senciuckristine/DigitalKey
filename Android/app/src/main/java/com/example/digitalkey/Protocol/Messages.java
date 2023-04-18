@@ -1,6 +1,6 @@
 package com.example.digitalkey.Protocol;
 
-public class Message {
+public class Messages {
 
     private static byte[] content = new byte[4];
 

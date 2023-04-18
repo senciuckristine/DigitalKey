@@ -3,17 +3,15 @@ package com.example.digitalkey.Protocol;
 
 import com.example.digitalkey.Utils;
 
-import java.util.stream.IntStream;
-
 public class Protocol {
 
-    private byte[] message_GET_STATUS = Message.createMessaje(Message.messageType.GET_STATUS);
-    private byte[] message_LOCK = Message.createMessaje(Message.messageType.LOCK);
-    private byte[] message_UNLOCK = Message.createMessaje(Message.messageType.UNLOCK);
+    private byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
+    private byte[] message_LOCK = Messages.createMessaje(Messages.messageType.LOCK);
+    private byte[] message_UNLOCK = Messages.createMessaje(Messages.messageType.UNLOCK);
 
     // for read
-    private static byte[] message_STATUS_LOCK = Message.createMessaje(Message.messageType.STATUS_LOCK);
-    private static byte[] message_STATUS_UNLOCK = Message.createMessaje(Message.messageType.STATUS_UNLOCK);
+    private static byte[] message_STATUS_LOCK = Messages.createMessaje(Messages.messageType.STATUS_LOCK);
+    private static byte[] message_STATUS_UNLOCK = Messages.createMessaje(Messages.messageType.STATUS_UNLOCK);
 
 
 

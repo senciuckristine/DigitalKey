@@ -1,50 +1,81 @@
+/**
+Binary encoding for communication:
+ 0 0       0 0         0 0       0 0     - 8 bits variable
+SOURCE  DESTINATION  COMMAND   PAYLOAD
+
+SOURCE
+01 - ANDROID
+
+10 - ARDUINO
+00 - ERORR
+
+COMMAND
+00 - STATUS 
+01 - GET_STATUS |
+10 - LOCK       | + PAYLOAD 00 
+11 - UNLOCK     |
+
+STATUS + PAYLOAD  
+10 => STATUS_LOCK
+11 => STATUS_UNLOCK
+*/
 const unsigned int MAX_MESSAGE_LENGTH = 9;
 int ledPin = 13;
+
+#define GET_STATUS B01100100
+#define LOCK B01101000
+#define UNLOCK B01101100
+#define STATUS_LOCK B10010010
+#define STATUS_UNLOCK B10010011
+
+
 void setup() {
  Serial.begin(9600);
  digitalWrite(ledPin,LOW);
 }
 
-void loop() {
+void loop() 
+{
+  //Check to see if anything is available in the serial receive buffer
+  while (Serial.available() > 0)
+  {
+    //Create a place to hold the incoming message
+    static char stringMessage[MAX_MESSAGE_LENGTH];
+    static unsigned int message_pos = 0, message=0;
+    int bitReade;
 
- //Check to see if anything is available in the serial receive buffer
- while (Serial.available() > 0)
- {
-   //Create a place to hold the incoming message
-   static char message[MAX_MESSAGE_LENGTH];
-   static unsigned int message_pos = 0;
+    //Read the next available byte in the serial receive buffer
+    char inByte = Serial.read();
 
-   //Read the next available byte in the serial receive buffer
-   char inByte = Serial.read();
-    Serial.println(inByte);
-   //Message coming in (check not terminating character) and guard for over message size
-   if (message_pos < 8)
-   {
-     //Add the incoming byte to our message
-     message[message_pos] = inByte;
-     message_pos++;
-   }
-   //Full message received...
-   if(message_pos == 8)
-   {
-     //Add null character to string
-     //message[message_pos] = '\0';
-
-     //Print the message (or do other things)
-     Serial.println(message);
-     Serial.println("nimic");
-      if(strcmp(message,"01101000") == 0)
-       {
-          digitalWrite(ledPin,HIGH);
-       }
-      if(strcmp(message,"01101100") == 0)
+    //Message coming in (check not terminating character) and guard for over message size
+    if (message_pos < 8)
+    {
+      //Add the incoming byte to our message
+      stringMessage[message_pos] = inByte;
+      bitReade = inByte  - '0';
+      if(bitReade == 1)
       {
-          digitalWrite(ledPin,LOW);
+          message += 1<<(7-message_pos);
       }
-
-     //Reset for the next message
-     message_pos = 0;
-   }
-  
- }
+      message_pos++;
+    }
+    //Full message received...
+    if(message_pos == 8)
+    {
+        if((message & LOCK) == LOCK)
+        {
+            digitalWrite(ledPin,HIGH);
+             Serial.println("Led is turned on\n");
+        }
+        if((message & UNLOCK) == UNLOCK)
+        {
+            digitalWrite(ledPin,LOW);
+             Serial.println("Led is turned off\n");
+        }
+      //Reset for the next message
+      message_pos = 0;
+      message = 0;
+    }
+  }
+ 
 }

@@ -1,24 +1,22 @@
 package com.example.digitalkey;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.digitalkey.Protocol.Message;
-import com.example.digitalkey.Protocol.Protocol;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.digitalkey.Protocol.Messages;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +31,7 @@ public class ConnectionHC06 extends AppCompatActivity {
     private BluetoothSocket btSocket = null;
     public static String address = null;
     private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
     public boolean activar;
     Handler bluetoothIn;
     final int handlerState = 0;
@@ -48,6 +47,7 @@ public class ConnectionHC06 extends AppCompatActivity {
         mButtonLedOn = findViewById(R.id.ledOn);
         mButtonLedOff = findViewById(R.id.ledOff);
         mButtonDisconnected = findViewById(R.id.Disconnect);
+        final TextView textViewInfo = findViewById(R.id.textViewInfo);
         mButtonLedOn.setVisibility(View.INVISIBLE);
         mButtonLedOff.setVisibility(View.INVISIBLE);
         mButtonDisconnected.setVisibility(View.INVISIBLE);
@@ -70,6 +70,26 @@ public class ConnectionHC06 extends AppCompatActivity {
 
         byte[] message_LOCK = {0} ;
         byte[] message_UNLOCK ={0};
+
+        bluetoothIn = new Handler(Looper.getMainLooper()) {
+            public void handleMessage(Message msg){
+                switch (msg.what) {
+
+
+                    case MESSAGE_READ:
+                        String arduinoMsg = msg.obj.toString(); // Read message from Arduino
+                        switch (arduinoMsg.toLowerCase()) {
+                            case "led is turned on":
+                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
+                                break;
+                            case "led is turned off":
+                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
+                                break;
+                        }
+                        break;
+                }
+            }
+        };
         mButtonConnectHC06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +99,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                 mButtonLedOn.setVisibility(View.VISIBLE);
                 mButtonLedOff.setVisibility(View.VISIBLE);
                 mButtonDisconnected.setVisibility(View.VISIBLE);
+                textViewInfo.setVisibility(View.VISIBLE);
                 onResume();
             }
         });
@@ -86,7 +107,7 @@ public class ConnectionHC06 extends AppCompatActivity {
         mButtonLedOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 byte[] message_LOCK = Message.createMessaje(Message.messageType.LOCK);
+                 byte[] message_LOCK = Messages.createMessaje(Messages.messageType.LOCK);
                 String v5 = Arrays.toString(message_LOCK);
                 String v4= v5.replaceAll(" ","");
                 String[] v1 =  v4.substring(1, v4.length() - 1).split(",");
@@ -115,8 +136,8 @@ public class ConnectionHC06 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                byte[] message_GET_STATUS = Message.createMessaje(Message.messageType.GET_STATUS);
-                byte[] message_UNLOCK = Message.createMessaje(Message.messageType.UNLOCK);
+                byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
+                byte[] message_UNLOCK = Messages.createMessaje(Messages.messageType.UNLOCK);
 
                 String v5 = Arrays.toString(message_UNLOCK);
                 String v4= v5.replaceAll(" ","");
@@ -153,6 +174,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                     mButtonLedOn.setVisibility(View.INVISIBLE);
                     mButtonLedOff.setVisibility(View.INVISIBLE);
                     mButtonDisconnected.setVisibility(View.INVISIBLE);
+                    textViewInfo.setVisibility(View.INVISIBLE);
                 } catch(Exception e){
                     e.printStackTrace();
                 }
@@ -224,16 +246,22 @@ public class ConnectionHC06 extends AppCompatActivity {
 
         public void run() {
             byte[] buffer = new byte[256];
-            int bytes;
+            int bytes = 0;
 
             // Se mantiene en modo escucha para determinar el ingreso de datos
             while (true) {
                 try {
-                    bytes = mmInStream.read(buffer);
-                    String readMessage = new String(buffer, 0, bytes);
-                    // Envia los datos obtenidos hacia el evento via handler
-                    //bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
-                } catch (IOException e) {
+                    buffer[bytes] = (byte) mmInStream.read();
+                    String readMessage;
+                    if (buffer[bytes] == '\n'){
+                        readMessage = new String(buffer,0,bytes);
+                        Log.e("Arduino Message",readMessage);
+                        bluetoothIn.obtainMessage(MESSAGE_READ,readMessage).sendToTarget();
+                        bytes = 0;
+                    } else {
+                        bytes++;
+                    }
+                    } catch (IOException e) {
                     break;
                 }
             }
