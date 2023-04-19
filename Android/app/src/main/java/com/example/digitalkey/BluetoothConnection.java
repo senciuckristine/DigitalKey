@@ -233,7 +233,6 @@ public class BluetoothConnection extends AppCompatActivity {
             mBleAdapter.startDiscovery();
 
             mButtonConnect.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View view) {
                     openNewActivity();

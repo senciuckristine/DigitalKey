@@ -12,6 +12,12 @@
     android:gravity="bottom"
     tools:context=".BluetoothConnection">
 
+    <ImageView
+        android:id="@+id/carImg"
+        android:layout_marginLeft="35dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp" />
+
     <TextView
         android:id="@+id/textViewInfo"
         android:layout_marginLeft="90dp"

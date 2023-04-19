@@ -13,6 +13,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class ConnectionHC06 extends AppCompatActivity {
     Handler bluetoothIn;
     final int handlerState = 0;
     Button mButtonConnectHC06,mButtonLedControl,mButtonDisconnected;
+    ImageView mCarImage;
     private ConnectedThread MyConexionBT;
     @SuppressLint({"MissingInflatedId", "MissingPermission"})
     @Override
@@ -43,12 +45,15 @@ public class ConnectionHC06 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection_hc06);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mCarImage = findViewById(R.id.carImg);
         mButtonConnectHC06 = findViewById(R.id.ConnectHC06);
         mButtonLedControl = findViewById(R.id.ledControl);
         mButtonDisconnected = findViewById(R.id.Disconnect);
         final TextView textViewInfo = findViewById(R.id.textViewInfo);
         mButtonLedControl.setVisibility(View.INVISIBLE);
         mButtonDisconnected.setVisibility(View.INVISIBLE);
+        mCarImage.setImageResource(R.drawable.car);
+
 
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -78,10 +83,12 @@ public class ConnectionHC06 extends AppCompatActivity {
                             case "car is locked":
                                 textViewInfo.setText("Arduino Message : " + arduinoMsg);
                                 mButtonLedControl.setText("Unlock the car");
+                                mCarImage.setImageResource(R.drawable.carlock);
                                 break;
                             case "car is unlocked":
                                 textViewInfo.setText("Arduino Message : " + arduinoMsg);
                                 mButtonLedControl.setText("Lock the car");
+                                mCarImage.setImageResource(R.drawable.carunlock);
                                 break;
                         }
                         break;
@@ -96,6 +103,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                 mButtonDisconnected.setText("DISCONECT");
                 mButtonLedControl.setVisibility(View.VISIBLE);
                 mButtonDisconnected.setVisibility(View.VISIBLE);
+                mCarImage.setVisibility(View.VISIBLE);
                 textViewInfo.setVisibility(View.VISIBLE);
                 onResume();
                 byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
@@ -218,6 +226,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                     mButtonConnectHC06.setText("CONNECT TO HC06");
                     mButtonLedControl.setVisibility(View.INVISIBLE);
                      mButtonDisconnected.setVisibility(View.INVISIBLE);
+                    mCarImage.setImageResource(R.drawable.car);
                     textViewInfo.setVisibility(View.INVISIBLE);
                 } catch(Exception e){
                     e.printStackTrace();
