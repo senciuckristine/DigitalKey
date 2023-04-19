@@ -20,7 +20,7 @@ STATUS + PAYLOAD
 11 => STATUS_UNLOCK
 */
 const unsigned int MAX_MESSAGE_LENGTH = 9;
-int ledPin = 13;
+int ledPin = 7;
 
 #define GET_STATUS B01100100
 #define LOCK B01101000
@@ -31,6 +31,7 @@ int ledPin = 13;
 
 void setup() {
  Serial.begin(9600);
+ pinMode(ledPin , OUTPUT);
  digitalWrite(ledPin,LOW);
 }
 
@@ -62,16 +63,32 @@ void loop()
     //Full message received...
     if(message_pos == 8)
     {
-        if((message & LOCK) == LOCK)
+        if((message & LOCK) == LOCK )
         {
             digitalWrite(ledPin,HIGH);
-             Serial.println("Led is turned on\n");
+            
+           
+            // Serial.println("Led is turned on\n");
         }
         if((message & UNLOCK) == UNLOCK)
         {
             digitalWrite(ledPin,LOW);
-             Serial.println("Led is turned off\n");
+            // Serial.println("Led is turned off\n");
+           
         }
+        if((message & GET_STATUS) == GET_STATUS)
+        {
+          if(digitalRead(ledPin)==HIGH)
+          {
+             Serial.println("Car is locked\n");
+          }
+          else
+          if(digitalRead(ledPin)==LOW)
+          {
+            Serial.println("Car is unlocked\n");
+          }
+        }
+       Serial.println(message);
       //Reset for the next message
       message_pos = 0;
       message = 0;

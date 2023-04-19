@@ -35,7 +35,7 @@ public class ConnectionHC06 extends AppCompatActivity {
     public boolean activar;
     Handler bluetoothIn;
     final int handlerState = 0;
-    Button mButtonConnectHC06,mButtonLedOn,mButtonLedOff,mButtonDisconnected;
+    Button mButtonConnectHC06,mButtonLedControl,mButtonDisconnected;
     private ConnectedThread MyConexionBT;
     @SuppressLint({"MissingInflatedId", "MissingPermission"})
     @Override
@@ -44,12 +44,10 @@ public class ConnectionHC06 extends AppCompatActivity {
         setContentView(R.layout.activity_connection_hc06);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mButtonConnectHC06 = findViewById(R.id.ConnectHC06);
-        mButtonLedOn = findViewById(R.id.ledOn);
-        mButtonLedOff = findViewById(R.id.ledOff);
+        mButtonLedControl = findViewById(R.id.ledControl);
         mButtonDisconnected = findViewById(R.id.Disconnect);
         final TextView textViewInfo = findViewById(R.id.textViewInfo);
-        mButtonLedOn.setVisibility(View.INVISIBLE);
-        mButtonLedOff.setVisibility(View.INVISIBLE);
+        mButtonLedControl.setVisibility(View.INVISIBLE);
         mButtonDisconnected.setVisibility(View.INVISIBLE);
 
 
@@ -68,8 +66,6 @@ public class ConnectionHC06 extends AppCompatActivity {
         //String data="10010010";
         //Protocol.decode(data);
 
-        byte[] message_LOCK = {0} ;
-        byte[] message_UNLOCK ={0};
 
         bluetoothIn = new Handler(Looper.getMainLooper()) {
             public void handleMessage(Message msg){
@@ -79,11 +75,13 @@ public class ConnectionHC06 extends AppCompatActivity {
                     case MESSAGE_READ:
                         String arduinoMsg = msg.obj.toString(); // Read message from Arduino
                         switch (arduinoMsg.toLowerCase()) {
-                            case "led is turned on":
+                            case "car is locked":
                                 textViewInfo.setText("Arduino Message : " + arduinoMsg);
+                                mButtonLedControl.setText("Unlock the car");
                                 break;
-                            case "led is turned off":
+                            case "car is unlocked":
                                 textViewInfo.setText("Arduino Message : " + arduinoMsg);
+                                mButtonLedControl.setText("Lock the car");
                                 break;
                         }
                         break;
@@ -96,73 +94,120 @@ public class ConnectionHC06 extends AppCompatActivity {
                 activar = true;
                 mButtonConnectHC06.setText("CONNECTED TO HC06");
                 mButtonDisconnected.setText("DISCONECT");
-                mButtonLedOn.setVisibility(View.VISIBLE);
-                mButtonLedOff.setVisibility(View.VISIBLE);
+                mButtonLedControl.setVisibility(View.VISIBLE);
                 mButtonDisconnected.setVisibility(View.VISIBLE);
                 textViewInfo.setVisibility(View.VISIBLE);
                 onResume();
+                byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
+
+
+                String vv5 = Arrays.toString(message_GET_STATUS);
+                String vv4= vv5.replaceAll(" ","");
+                String[] vv1 =  vv4.substring(1, vv4.length() - 1).split(",");
+
+                for(int i=0;i<vv1.length;i++) {
+                    if(vv1[i].equals("1")) {
+                        vv1[i]="01";
+                    }
+                    if(vv1[i].equals("0")) {
+                        vv1[i]="00";
+                    }
+                    if(vv1[i].equals("16")) {
+                        vv1[i]="10";
+                    }
+                    if(vv1[i].equals("17")) {
+                        vv1[i]="11";
+                    }
+                }
+                String vv2 = Utils.convertStringArrayToString(vv1);
+                MyConexionBT.write(vv2);
+
             }
         });
 
-        mButtonLedOn.setOnClickListener(new View.OnClickListener() {
+        mButtonLedControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 byte[] message_LOCK = Messages.createMessaje(Messages.messageType.LOCK);
-                String v5 = Arrays.toString(message_LOCK);
-                String v4= v5.replaceAll(" ","");
-                String[] v1 =  v4.substring(1, v4.length() - 1).split(",");
+                String btnState = mButtonLedControl.getText().toString().toLowerCase();
+                switch (btnState) {
+                    case "lock the car":
+                        byte[] message_LOCK = Messages.createMessaje(Messages.messageType.LOCK);
+                        String v5 = Arrays.toString(message_LOCK);
+                        String v4 = v5.replaceAll(" ", "");
+                        String[] v1 = v4.substring(1, v4.length() - 1).split(",");
 
-                for(int i=0;i<v1.length;i++) {
-                    if(v1[i].equals("1")) {
-                        v1[i]="01";
+                        for (int i = 0; i < v1.length; i++) {
+                            if (v1[i].equals("1")) {
+                                v1[i] = "01";
+                            }
+                            if (v1[i].equals("0")) {
+                                v1[i] = "00";
+                            }
+                            if (v1[i].equals("16")) {
+                                v1[i] = "10";
+                            }
+                            if (v1[i].equals("17")) {
+                                v1[i] = "11";
+                            }
+                        }
+                        String v2 = Utils.convertStringArrayToString(v1);
+                        MyConexionBT.write(v2);
+                        break;
+                    case "unlock the car":
+                        byte[] message_UNLOCK = Messages.createMessaje(Messages.messageType.UNLOCK);
+
+                        String v7 = Arrays.toString(message_UNLOCK);
+                        String v8 = v7.replaceAll(" ", "");
+                        String[] v9 = v8.substring(1, v8.length() - 1).split(",");
+
+                        for (int i = 0; i < v9.length; i++) {
+                            if (v9[i].equals("1")) {
+                                v9[i] = "01";
+                            }
+                            if (v9[i].equals("0")) {
+                                v9[i] = "00";
+                            }
+                            if (v9[i].equals("16")) {
+                                v9[i] = "10";
+                            }
+                            if (v9[i].equals("17")) {
+                                v9[i] = "11";
+                            }
+                        }
+                        String v10 = Utils.convertStringArrayToString(v9);
+                        MyConexionBT.write(v10);
+                        break;
+                }
+                byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
+
+
+                String vv5 = Arrays.toString(message_GET_STATUS);
+                String vv4= vv5.replaceAll(" ","");
+                String[] vv1 =  vv4.substring(1, vv4.length() - 1).split(",");
+
+                for(int i=0;i<vv1.length;i++) {
+                    if(vv1[i].equals("1")) {
+                        vv1[i]="01";
                     }
-                    if(v1[i].equals("0")) {
-                        v1[i]="00";
+                    if(vv1[i].equals("0")) {
+                        vv1[i]="00";
                     }
-                    if(v1[i].equals("16")) {
-                        v1[i]="10";
+                    if(vv1[i].equals("16")) {
+                        vv1[i]="10";
                     }
-                    if(v1[i].equals("17")) {
-                        v1[i]="11";
+                    if(vv1[i].equals("17")) {
+                        vv1[i]="11";
                     }
                 }
-                String v2 = Utils.convertStringArrayToString(v1);
-                MyConexionBT.write(v2);
+                String vv2 = Utils.convertStringArrayToString(vv1);
+                MyConexionBT.write(vv2);
+            }
+
                 //MyConexionBT.write("01101000");
 
-            }
+
         });
-        mButtonLedOff.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
-                byte[] message_UNLOCK = Messages.createMessaje(Messages.messageType.UNLOCK);
-
-                String v5 = Arrays.toString(message_UNLOCK);
-                String v4= v5.replaceAll(" ","");
-                String[] v1 =  v4.substring(1, v4.length() - 1).split(",");
-
-                for(int i=0;i<v1.length;i++) {
-                    if(v1[i].equals("1")) {
-                        v1[i]="01";
-                    }
-                    if(v1[i].equals("0")) {
-                        v1[i]="00";
-                    }
-                    if(v1[i].equals("16")) {
-                        v1[i]="10";
-                    }
-                    if(v1[i].equals("17")) {
-                        v1[i]="11";
-                    }
-                }
-                String v2 = Utils.convertStringArrayToString(v1);
-                MyConexionBT.write(v2);
-                //MyConexionBT.write("01101100");
-               // MyConexionBT.read();
-            }
-        });
 
         mButtonDisconnected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,9 +216,8 @@ public class ConnectionHC06 extends AppCompatActivity {
 
                     btSocket.close();
                     mButtonConnectHC06.setText("CONNECT TO HC06");
-                    mButtonLedOn.setVisibility(View.INVISIBLE);
-                    mButtonLedOff.setVisibility(View.INVISIBLE);
-                    mButtonDisconnected.setVisibility(View.INVISIBLE);
+                    mButtonLedControl.setVisibility(View.INVISIBLE);
+                     mButtonDisconnected.setVisibility(View.INVISIBLE);
                     textViewInfo.setVisibility(View.INVISIBLE);
                 } catch(Exception e){
                     e.printStackTrace();
@@ -261,7 +305,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                     } else {
                         bytes++;
                     }
-                    } catch (IOException e) {
+                     } catch (IOException e) {
                     break;
                 }
             }

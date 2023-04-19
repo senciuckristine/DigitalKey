@@ -31,20 +31,14 @@
 
 
     <Button
-        android:id="@+id/ledOn"
+        android:id="@+id/ledControl"
         android:layout_marginLeft="85dp"
         android:minWidth="200dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Turn Led ON" />
+        android:text="Lock the car" />
 
-    <Button
-        android:id="@+id/ledOff"
-        android:layout_marginLeft="85dp"
-        android:minWidth="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Turn Led OFF" />
+
 
     <Button
         android:id="@+id/Disconnect"
