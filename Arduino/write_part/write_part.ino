@@ -21,6 +21,11 @@ STATUS + PAYLOAD
 */
 const unsigned int MAX_MESSAGE_LENGTH = 9;
 int ledPin = 7;
+int touchPin = 8;
+unsigned long previousMillis = 0;
+unsigned long elapsedMillis = 0;
+int debounceTime = 1000;
+int ledState = LOW;
 
 #define GET_STATUS B01100100
 #define LOCK B01101000
@@ -32,11 +37,33 @@ int ledPin = 7;
 void setup() {
  Serial.begin(9600);
  pinMode(ledPin , OUTPUT);
+ pinMode(touchPin , INPUT);
  digitalWrite(ledPin,LOW);
 }
 
 void loop() 
 {
+  elapsedMillis = millis() - previousMillis;
+  //if sensor is touched and the elapsed time is bigger than the given debounce time
+  
+ if(digitalRead(touchPin)==HIGH && elapsedMillis > debounceTime)
+  {
+    if(ledState == HIGH)
+    {
+      ledState = LOW;
+       Serial.println(STATUS_UNLOCK);
+    }
+    else
+    {
+      ledState = HIGH;
+       Serial.println(STATUS_LOCK);
+    }
+    digitalWrite(ledPin,ledState);
+
+     //store the current millis on the previous millis
+    previousMillis = millis();
+  }
+  
   //Check to see if anything is available in the serial receive buffer
   while (Serial.available() > 0)
   {
@@ -44,7 +71,7 @@ void loop()
     static char stringMessage[MAX_MESSAGE_LENGTH];
     static unsigned int message_pos = 0, message=0;
     int bitReade;
-
+ //calculate the elapsed seconds
     //Read the next available byte in the serial receive buffer
     char inByte = Serial.read();
 
@@ -92,6 +119,7 @@ void loop()
       message_pos = 0;
       message = 0;
     }
+ 
   }
  
 }
