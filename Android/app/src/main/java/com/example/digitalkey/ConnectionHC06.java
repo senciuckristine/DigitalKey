@@ -54,8 +54,6 @@ public class ConnectionHC06 extends AppCompatActivity {
         mButtonDisconnected.setVisibility(View.INVISIBLE);
         mCarImage.setImageResource(R.drawable.car);
 
-
-
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDeveicesList = btAdapter.getBondedDevices();
 
@@ -73,25 +71,55 @@ public class ConnectionHC06 extends AppCompatActivity {
 
 
         bluetoothIn = new Handler(Looper.getMainLooper()) {
+
             public void handleMessage(Message msg){
+
                 switch (msg.what) {
-
-
                     case MESSAGE_READ:
+                        byte[] message_STATUS_UNLOCK = Messages.createMessaje(Messages.messageType.STATUS_UNLOCK);
+                        byte[] message_STATUS_LOCK = Messages.createMessaje(Messages.messageType.STATUS_LOCK);
                         String arduinoMsg = msg.obj.toString(); // Read message from Arduino
-                        switch (arduinoMsg.toLowerCase()) {
-                            case "car is locked":
-                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
+                        arduinoMsg=arduinoMsg.replace("\r","").replace("\n","");
+                        int arduinoMsgInt = Integer.parseInt(arduinoMsg);
+                        String arduinoMsgBinary = Integer.toBinaryString(arduinoMsgInt);
+
+                        byte byte1 = Utils.hexToByte(arduinoMsgBinary.substring(0,2));
+                        byte byte2 = Utils.hexToByte(arduinoMsgBinary.substring(2,4));
+                        byte byte3 = Utils.hexToByte(arduinoMsgBinary.substring(4,6));
+                        byte byte4 = Utils.hexToByte(arduinoMsgBinary.substring(6,8));
+
+                        // compare the first 3 bytes as first action
+                        if(byte1 == message_STATUS_LOCK[0] && byte2 == message_STATUS_LOCK[1]
+                                && byte3 == message_STATUS_LOCK[2]){
+                            // if match then compare the last byte
+                            if(byte4 == message_STATUS_LOCK[3]){ //lock status
+                                // lock command received
+                                // schimb mesajul pe buton in comanda toggle
+                                textViewInfo.setText("Arduino Message : Car is Locked ");
                                 mButtonLedControl.setText("Unlock the car");
                                 mCarImage.setImageResource(R.drawable.carlock);
-                                break;
-                            case "car is unlocked":
-                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
+                            }else if(byte4 == message_STATUS_UNLOCK[3]){    //unlock status
+                                // unlock command received
+                                // schimb mesajul pe buton in comanda toggle
+                                textViewInfo.setText("Arduino Message : Car is Unlocked");
                                 mButtonLedControl.setText("Lock the car");
                                 mCarImage.setImageResource(R.drawable.carunlock);
-                                break;
+                            }
                         }
-                        break;
+
+//                        switch (arduinoMsg.toLowerCase()) {
+//                            case "car is locked":
+//                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
+//                                mButtonLedControl.setText("Unlock the car");
+//                                mCarImage.setImageResource(R.drawable.carlock);
+//                                break;
+//                            case "car is unlocked":
+//                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
+//                                mButtonLedControl.setText("Lock the car");
+//                                mCarImage.setImageResource(R.drawable.carunlock);
+//                                break;
+//                        }
+//                        break;
                 }
             }
         };
@@ -107,8 +135,6 @@ public class ConnectionHC06 extends AppCompatActivity {
                 textViewInfo.setVisibility(View.VISIBLE);
                 onResume();
                 byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
-
-
                 String vv5 = Arrays.toString(message_GET_STATUS);
                 String vv4= vv5.replaceAll(" ","");
                 String[] vv1 =  vv4.substring(1, vv4.length() - 1).split(",");

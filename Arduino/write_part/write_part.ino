@@ -80,15 +80,14 @@ void loop()
         {
           if(digitalRead(ledPin)==HIGH)
           {
-             Serial.println("Car is locked\n");
+             Serial.println(STATUS_LOCK);
           }
           else
           if(digitalRead(ledPin)==LOW)
           {
-            Serial.println("Car is unlocked\n");
+            Serial.println(STATUS_UNLOCK);
           }
         }
-       Serial.println(message);
       //Reset for the next message
       message_pos = 0;
       message = 0;

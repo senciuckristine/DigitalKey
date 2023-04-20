@@ -2,7 +2,6 @@ package com.example.digitalkey.Protocol;
 
 public class Messages {
 
-    private static byte[] content = new byte[4];
 
     public enum messageType {
         GET_STATUS,
@@ -13,6 +12,7 @@ public class Messages {
     }
 
     public static byte[] createMessaje(messageType type){
+        byte[] content = new byte[4];
         switch(type){
             case GET_STATUS:
                 content[0] = 0x01 ;
