@@ -38,6 +38,13 @@ import android.widget.Toast;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,21 +68,38 @@ public class BluetoothConnection extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapter;
     ArrayList arrayList ;
     ListView Deviceslist;
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
+    FirebaseAuth auth;
+    FirebaseUser user;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetoothconnection);
+        textView = findViewById(R.id.uid);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if(user == null){
+            Intent intent = new Intent(getApplicationContext(),Login.class);
+            startActivity(intent);
+            finish();
+        }
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.bluetoothconnection);
+
+
+
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.dashboard:
-                        startActivity(new Intent(getApplicationContext(), DashBoard.class));
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(getApplicationContext(), Login.class));
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.bluetoothconnection:
@@ -256,10 +280,24 @@ public class BluetoothConnection extends AppCompatActivity {
                 if(device != null && device.getName() !=null) {
                     arrayList.add(device.getName() + " " + device.getAddress());
                     arrayAdapter.notifyDataSetChanged();
-                    if(device.getName().equals("HC-06") && device.getAddress().equals("00:22:02:01:2F:0F")){
-                        mButtonConnect.setVisibility(View.VISIBLE);
-                        address = device.getAddress();
-                    }
+                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            final String getMacAddress = snapshot.child(uid).child("mac").getValue(String.class);
+
+                            if (device.getAddress().equals(getMacAddress)) {
+                                mButtonConnect.setVisibility(View.VISIBLE);
+                                address = device.getAddress();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
 
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.digitalkey;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -18,6 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.digitalkey.Protocol.Messages;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +46,8 @@ public class ConnectionHC06 extends AppCompatActivity {
     Button mButtonConnectHC06,mButtonLedControl,mButtonDisconnected;
     ImageView mCarImage;
     private ConnectedThread MyConexionBT;
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
+
     @SuppressLint({"MissingInflatedId", "MissingPermission"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +65,20 @@ public class ConnectionHC06 extends AppCompatActivity {
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDeveicesList = btAdapter.getBondedDevices();
+        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                address = snapshot.child(uid).child("mac").getValue(String.class);
 
-        for(BluetoothDevice pairedDevice : pairedDeveicesList){
-            if(pairedDevice.getName().equals("HC-06")){
-
-                address = pairedDevice.getAddress();
             }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        }
+            }
+        });
 
-        //String data="10010010";
-        //Protocol.decode(data);
 
 
         bluetoothIn = new Handler(Looper.getMainLooper()) {
@@ -106,20 +117,6 @@ public class ConnectionHC06 extends AppCompatActivity {
                                 mCarImage.setImageResource(R.drawable.carunlock);
                             }
                         }
-
-//                        switch (arduinoMsg.toLowerCase()) {
-//                            case "car is locked":
-//                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
-//                                mButtonLedControl.setText("Unlock the car");
-//                                mCarImage.setImageResource(R.drawable.carlock);
-//                                break;
-//                            case "car is unlocked":
-//                                textViewInfo.setText("Arduino Message : " + arduinoMsg);
-//                                mButtonLedControl.setText("Lock the car");
-//                                mCarImage.setImageResource(R.drawable.carunlock);
-//                                break;
-//                        }
-//                        break;
                 }
             }
         };
@@ -127,7 +124,7 @@ public class ConnectionHC06 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 activar = true;
-                mButtonConnectHC06.setText("CONNECTED TO HC06");
+                mButtonConnectHC06.setVisibility(View.INVISIBLE);
                 mButtonDisconnected.setText("DISCONECT");
                 mButtonLedControl.setVisibility(View.VISIBLE);
                 mButtonDisconnected.setVisibility(View.VISIBLE);
@@ -237,9 +234,6 @@ public class ConnectionHC06 extends AppCompatActivity {
                 MyConexionBT.write(vv2);
             }
 
-                //MyConexionBT.write("01101000");
-
-
         });
 
 
@@ -250,6 +244,7 @@ public class ConnectionHC06 extends AppCompatActivity {
 
                     btSocket.close();
                     mButtonConnectHC06.setText("CONNECT TO HC06");
+                    mButtonConnectHC06.setVisibility(View.VISIBLE);
                     mButtonLedControl.setVisibility(View.INVISIBLE);
                      mButtonDisconnected.setVisibility(View.INVISIBLE);
                     mCarImage.setImageResource(R.drawable.car);
@@ -326,8 +321,6 @@ public class ConnectionHC06 extends AppCompatActivity {
         public void run() {
             byte[] buffer = new byte[256];
             int bytes = 0;
-
-            // Se mantiene en modo escucha para determinar el ingreso de datos
             while (true) {
                 try {
                     buffer[bytes] = (byte) mmInStream.read();
@@ -346,34 +339,16 @@ public class ConnectionHC06 extends AppCompatActivity {
             }
         }
 
-        //Envio de trama
         public void write(String input) {
             try {
 
                 mmOutStream.write(input.getBytes());
 
             } catch (IOException e) {
-                //si no es posible enviar datos se cierra la conexión
                 Toast.makeText(getBaseContext(), "Connection failed", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
-
-//        public void read() {
-//            // delegate to Protocol class
-//            byte[] data = new byte[256];
-//            try {
-//
-//                mmInStream.read(data);
-//                Protocol.decode(new String(data));
-//
-//
-//            } catch (IOException e) {
-//                //si no es posible enviar datos se cierra la conexión
-//                Toast.makeText(getBaseContext(), "Connection failed", Toast.LENGTH_LONG).show();
-//                finish();
-//            }
-//        }
 
 
     }
