@@ -3,14 +3,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/dashboard"
-        android:title="Dashboard"
-        android:icon="@drawable/ic_action_refresh"/>
-    <item
-        android:id="@+id/home"
-        android:title="Home"
-        android:icon="@drawable/ic_action_refresh"/>
-    <item
+        android:title="LogOut"
+        android:height="100dp"
+        android:width="1000dp"
+        android:icon="@drawable/logout_icon"/>
+     <item
         android:id="@+id/bluetoothconnection"
         android:title="Bluetooth"
-        android:icon="@drawable/ic_action_on"/>
+         android:height="100dp"
+         android:width="1000dp"
+        android:icon="@drawable/ic_action_on" />
+
 </menu>

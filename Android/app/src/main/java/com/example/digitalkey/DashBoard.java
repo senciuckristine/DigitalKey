@@ -33,11 +33,7 @@ public class DashBoard extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId())
                 {
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                        overridePendingTransition(0,0);
-                        return true;
-                    case R.id.dashboard:
+                     case R.id.dashboard:
                         return true;
                     case R.id.bluetoothconnection:
                         startActivity(new Intent(getApplicationContext(), BluetoothConnection.class));

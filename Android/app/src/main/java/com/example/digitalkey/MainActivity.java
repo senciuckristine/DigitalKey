@@ -27,16 +27,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.home);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId())
                 {
-                    case R.id.home:
-                        return true;
-                    case R.id.dashboard:
+                     case R.id.dashboard:
                         startActivity(new Intent(getApplicationContext(),DashBoard.class));
                         overridePendingTransition(0,0);
                         return true;
