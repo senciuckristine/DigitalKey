@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1062672711701",
+    "firebase_url": "https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "digitalkeylogin",
+    "storage_bucket": "digitalkeylogin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062672711701:android:dc8d63cf7c12ad52af4e1c",
+        "android_client_info": {
+          "package_name": "com.example.admindigitalkey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062672711701-olhhip5np85h4u2obacilqelpgan4bat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKWdw5xowHCnGrEgHwPK7L7Fd3H0V7wjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062672711701-olhhip5np85h4u2obacilqelpgan4bat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062672711701:android:a01deed0ea4017e1af4e1c",
+        "android_client_info": {
+          "package_name": "com.example.digitalkey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062672711701-olhhip5np85h4u2obacilqelpgan4bat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKWdw5xowHCnGrEgHwPK7L7Fd3H0V7wjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062672711701-olhhip5np85h4u2obacilqelpgan4bat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
