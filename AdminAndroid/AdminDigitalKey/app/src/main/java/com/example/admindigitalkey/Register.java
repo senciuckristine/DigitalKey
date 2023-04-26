@@ -52,7 +52,7 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAuth = FirebaseAuth.getInstance();
-        EditText emailEditText = findViewById(R.id.phone);
+        EditText emailEditText = findViewById(R.id.email);
         EditText passwordEditText = findViewById(R.id.password);
         EditText macEditText = findViewById(R.id.mac);
         Button loginREG = findViewById(R.id.registerBtn);
@@ -79,7 +79,7 @@ public class Register extends AppCompatActivity {
                                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                            databaseReference.child("users").child(uid).child("mac").setValue(mac);
                                            databaseReference.child("users").child(uid).child("email").setValue(email);
-                                            databaseReference.child("users").child(uid).child("passwowrd").setValue(password);
+                                            databaseReference.child("users").child(uid).child("password").setValue(password);
                                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                                             startActivity(intent);
                                             finish();

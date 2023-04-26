@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+
+
+
+    <EditText
+        android:id="@+id/macupdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mac Address"
+        android:maxLines="1"
+        android:paddingStart="20dp"
+        android:layout_marginTop="70dp"
+        android:paddingLeft="0dp"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/updateBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Mac address for this user"
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:background="@color/teal_200"
+        android:textColor="@color/white"
+        android:layout_marginBottom="30dp"
+        />
+
+    
+
+
+</LinearLayout>

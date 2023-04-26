@@ -22,7 +22,7 @@
 
         tools:ignore="RtlCompat" />
     <EditText
-        android:id="@+id/phone"
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
