@@ -1,7 +1,7 @@
 package com.example.admindigitalkey;
 
 public class Post {
-    String email,mac,password;
+    String email,password;
 
     public String getEmail() {
         return email;
@@ -9,14 +9,6 @@ public class Post {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
     }
 
     public String getPassword() {

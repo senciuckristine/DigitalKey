@@ -65,20 +65,25 @@ public class ConnectionHC06 extends AppCompatActivity {
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDeveicesList = btAdapter.getBondedDevices();
-        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                address = snapshot.child(uid).child("mac").getValue(String.class);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+//        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                address = snapshot.child(uid).child("mac").getValue(String.class);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+        String lastword = null;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            lastword = extras.getString("key");
+            address = lastword;
+        }
 
 
         bluetoothIn = new Handler(Looper.getMainLooper()) {

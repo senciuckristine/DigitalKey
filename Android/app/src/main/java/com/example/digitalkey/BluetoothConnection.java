@@ -29,6 +29,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -124,7 +125,18 @@ public class BluetoothConnection extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
         Deviceslist.setAdapter(arrayAdapter);
 
+        Deviceslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                String selectedFromList = (String) (Deviceslist.getItemAtPosition(position));
+                String lastword = selectedFromList.substring(selectedFromList.lastIndexOf(" ")+1);
+                Intent intent = new Intent(BluetoothConnection.this, ConnectionHC06.class);
+                intent.putExtra("key",lastword);
+                    startActivity(intent);
 
+            }
+        });
         if (mBleAdapter == null) {
             mStatusBluetooth.setText("Bluetooth is not available");
         } else {
@@ -250,23 +262,18 @@ public class BluetoothConnection extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     public void discoverDevices(View V){
         if (mBleAdapter.isEnabled()) {
-            showToast("Scanning Devices");
+            showToast("Scanning for your car");
             mBleAdapter.startDiscovery();
-
-            mButtonConnect.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    openNewActivity();
-                }
-            });
         }else{
             showToast("You need to turn on Bluetooth");
         }
     }
+
     public void openNewActivity(){
         Intent intent = new Intent(this, ConnectionHC06.class);
         startActivity(intent);
     }
+
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         @Override
@@ -274,18 +281,18 @@ public class BluetoothConnection extends AppCompatActivity {
             String action = intent.getAction();
             if(BluetoothDevice.ACTION_FOUND.equals(action)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
                 if(device != null && device.getName() !=null) {
-                    arrayList.add(device.getName() + " " + device.getAddress());
-                    arrayAdapter.notifyDataSetChanged();
                     databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            final String getMacAddress = snapshot.child(uid).child("mac").getValue(String.class);
-
-                            if (device.getAddress().equals(getMacAddress)) {
-                                mButtonConnect.setVisibility(View.VISIBLE);
-                                address = device.getAddress();
+                        //    final String getMacAddress = snapshot.child(uid).child("mac").getValue(String.class);
+                            for(DataSnapshot ds : snapshot.child(uid).child("mac").getChildren()) {
+                                 if (device.getAddress().equals(ds.getValue(String.class))) {
+                                    arrayList.add("Connect to your car: " + device.getAddress());
+                                    arrayAdapter.notifyDataSetChanged();
+                                }
                             }
                         }
 

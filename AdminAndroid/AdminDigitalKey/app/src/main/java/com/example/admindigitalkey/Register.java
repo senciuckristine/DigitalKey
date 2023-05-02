@@ -69,29 +69,35 @@ public class Register extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(Register.this, "Account Created.",
-                                            Toast.LENGTH_SHORT).show();
-                                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                           databaseReference.child("users").child(uid).child("mac").setValue(mac);
-                                           databaseReference.child("users").child(uid).child("email").setValue(email);
-                                            databaseReference.child("users").child(uid).child("password").setValue(password);
-                                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                                            startActivity(intent);
-                                            finish();
+                                    if(password.length()>7) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Toast.makeText(Register.this, "Account Created.",
+                                                Toast.LENGTH_SHORT).show();
+                                        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                                databaseReference.child("users").child(uid).child("mac").child("1").setValue(mac);
+                                                databaseReference.child("users").child(uid).child("email").setValue(email);
+                                                databaseReference.child("users").child(uid).child("password").setValue(password);
+                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
 
 
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                        }
-                                    });
+                                            }
+                                        });
+                                    }else {
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(Register.this, "Password needs to be at least 6 characters.",
+                                                Toast.LENGTH_SHORT).show();
+
+                                    }
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Toast.makeText(Register.this, "Authentication failed.",

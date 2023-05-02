@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -18,10 +19,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     Adapter adapter;
-    
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

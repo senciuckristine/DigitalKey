@@ -68,7 +68,7 @@
         android:onClick="discoverDevices"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Devices"
+        android:text="Start DigitalKey"
         style="@style/TextAppearance.AppCompat.Widget.Button.Colored"
         tools:ignore="ExtraText" />
     <ListView android:id="@+id/listView1" android:layout_height="70dp" android:layout_width="match_parent"></ListView>

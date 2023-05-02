@@ -4,30 +4,45 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical">
+    <TextView
+        android:id="@+id/listofmacaddresses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List of mac addresses"
+        android:layout_gravity="center"
+        android:textColor="#000"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        />
 
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="184dp">
+
+    </ListView>
 
 
     <EditText
         android:id="@+id/macupdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
         android:hint="Mac Address"
+        android:imeOptions="actionDone"
         android:maxLines="1"
         android:paddingStart="20dp"
-        android:layout_marginTop="70dp"
         android:paddingLeft="0dp"
-        android:imeOptions="actionDone"
         android:singleLine="true"
 
         />
-
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/updateBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update Mac address for this user"
-        android:layout_marginTop="70dp"
+        android:text="Add new Mac address for this user"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="50dp"
         android:layout_marginLeft="50dp"
         android:background="@color/teal_200"
