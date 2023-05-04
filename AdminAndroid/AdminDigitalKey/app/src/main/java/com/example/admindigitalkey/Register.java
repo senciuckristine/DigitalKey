@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.regex.Pattern;
+
 public class Register extends AppCompatActivity {
     FirebaseAuth  mAuth;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -46,6 +48,18 @@ public class Register extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    public static boolean isValid(String email)
+    {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,21 +69,30 @@ public class Register extends AppCompatActivity {
         EditText emailEditText = findViewById(R.id.email);
         EditText passwordEditText = findViewById(R.id.password);
         EditText macEditText = findViewById(R.id.mac);
-        Button loginREG = findViewById(R.id.registerBtn);
+        Button registerBtn = findViewById(R.id.registerBtn);
 
-        loginREG.setOnClickListener(new View.OnClickListener() {
+        registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String email = emailEditText.getText().toString();
                 final String password = passwordEditText.getText().toString();
                 final String mac = macEditText.getText().toString();
+                if(email.isEmpty() || mac.isEmpty() || password.isEmpty() || email == null || mac == null || password == null){
+                    Toast.makeText(Register.this, "Please complete every filed.",
+                            Toast.LENGTH_SHORT).show();
+                }else if (password.length() < 6){
+                    Toast.makeText(Register.this, "Password needs to be at least 6 characters.",
+                            Toast.LENGTH_SHORT).show();
+                }else if(!isValid(email)){
+                    Toast.makeText(Register.this, "Email is not a valid format.",
+                            Toast.LENGTH_SHORT).show();
+                }else {
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    if(password.length()>7) {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(Register.this, "Account Created.",
                                                 Toast.LENGTH_SHORT).show();
@@ -92,20 +115,15 @@ public class Register extends AppCompatActivity {
 
                                             }
                                         });
-                                    }else {
+                                    } else {
                                         // If sign in fails, display a message to the user.
-                                        Toast.makeText(Register.this, "Password needs to be at least 6 characters.",
+                                        Toast.makeText(Register.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
 
                                     }
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(Register.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-
                                 }
-                            }
-                        });
+                            });
+                }
 
 
 
