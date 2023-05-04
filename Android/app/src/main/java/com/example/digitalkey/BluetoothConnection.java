@@ -98,7 +98,7 @@ public class BluetoothConnection extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.dashboard:
+                    case R.id.logout:
                         FirebaseAuth.getInstance().signOut();
                         startActivity(new Intent(getApplicationContext(), Login.class));
                         overridePendingTransition(0, 0);
@@ -289,11 +289,13 @@ public class BluetoothConnection extends AppCompatActivity {
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         //    final String getMacAddress = snapshot.child(uid).child("mac").getValue(String.class);
                             for(DataSnapshot ds : snapshot.child(uid).child("mac").getChildren()) {
-                                 if (device.getAddress().equals(ds.getValue(String.class))) {
-                                    arrayList.add("Connect to your car: " + device.getAddress());
+                                String keyValue = ds.getKey();
+                                 if (device.getAddress().equals(keyValue)) {
+                                    arrayList.add("Connect to your car: " + ds.getValue() + " " + keyValue);
                                     arrayAdapter.notifyDataSetChanged();
                                 }
                             }
+
                         }
 
                         @Override

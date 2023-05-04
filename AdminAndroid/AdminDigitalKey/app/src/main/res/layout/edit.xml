@@ -18,7 +18,7 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="184dp">
+        android:layout_height="231dp">
 
     </ListView>
 
@@ -29,6 +29,20 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:hint="Mac Address"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:paddingStart="20dp"
+        android:paddingLeft="0dp"
+        android:singleLine="true"
+
+        />
+
+    <EditText
+        android:id="@+id/carmodelupdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Car Model"
         android:imeOptions="actionDone"
         android:maxLines="1"
         android:paddingStart="20dp"

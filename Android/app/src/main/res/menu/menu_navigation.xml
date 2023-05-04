@@ -2,7 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/dashboard"
+        android:id="@+id/logout"
         android:title="LogOut"
         android:height="100dp"
         android:width="1000dp"

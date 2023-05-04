@@ -63,6 +63,7 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
                 View holderView = (LinearLayout) dialogPlus.getHolderView();
 
                 EditText updatemac = holderView.findViewById(R.id.macupdate);
+                EditText updatecarmodel = holderView.findViewById(R.id.carmodelupdate);
                 TextView textView = holderView.findViewById(R.id.listofmacaddresses);
                 ListView Deviceslist = holderView.findViewById(R.id.listView1);
                 ArrayAdapter<String> arrayAdapter;
@@ -79,7 +80,7 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
                         int index = 0;
                         for(DataSnapshot ds : snapshot.child(getRef(i).getKey()).child("mac").getChildren()) {
                             index++;
-                            arrayList.add("Mac Address "+ index + ": " + ds.getValue(String.class));
+                            arrayList.add("Mac Address "+ index + ": " + ds.getValue(String.class) + " " + ds.getKey());
                             arrayAdapter.notifyDataSetChanged();
                         }
                     }
@@ -101,11 +102,11 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
                                 int index = 0;
                                 for(DataSnapshot ds : snapshot.child(getRef(i).getKey()).child("mac").getChildren()) {
                                     index++;
-                                    arrayList.add("Mac Address "+ index + ": " + ds.getValue(String.class));
+                                    arrayList.add("Mac Address "+ index + ": " + ds.getValue(String.class) + ds.getKey());
                                     arrayAdapter.notifyDataSetChanged();
                                 }
                                 index++;
-                                databaseReference.child("users").child(getRef(i).getKey()).child("mac").child(String.valueOf(index)).setValue(updatemac.getText().toString());
+                                databaseReference.child("users").child(getRef(i).getKey()).child("mac").child(updatemac.getText().toString()).setValue(updatecarmodel.getText().toString());
                                 dialogPlus.dismiss();
                             }
 

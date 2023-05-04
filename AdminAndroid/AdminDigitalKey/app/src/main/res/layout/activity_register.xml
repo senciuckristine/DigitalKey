@@ -46,7 +46,18 @@
         android:singleLine="true"
         tools:ignore="MissingConstraints"
         />
-
+    <EditText
+        android:id="@+id/carmodel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Car Model"
+        android:maxLines="1"
+        android:paddingStart="20dp"
+        android:paddingLeft="0dp"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        tools:ignore="MissingConstraints"
+        />
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"

@@ -69,6 +69,7 @@ public class Register extends AppCompatActivity {
         EditText emailEditText = findViewById(R.id.email);
         EditText passwordEditText = findViewById(R.id.password);
         EditText macEditText = findViewById(R.id.mac);
+        EditText carModelEditText = findViewById(R.id.carmodel);
         Button registerBtn = findViewById(R.id.registerBtn);
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +78,7 @@ public class Register extends AppCompatActivity {
                 final String email = emailEditText.getText().toString();
                 final String password = passwordEditText.getText().toString();
                 final String mac = macEditText.getText().toString();
+                final String carmodel = carModelEditText.getText().toString();
                 if(email.isEmpty() || mac.isEmpty() || password.isEmpty() || email == null || mac == null || password == null){
                     Toast.makeText(Register.this, "Please complete every filed.",
                             Toast.LENGTH_SHORT).show();
@@ -100,7 +102,7 @@ public class Register extends AppCompatActivity {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                                databaseReference.child("users").child(uid).child("mac").child("1").setValue(mac);
+                                                databaseReference.child("users").child(uid).child("mac").child(mac).setValue(carmodel);
                                                 databaseReference.child("users").child(uid).child("email").setValue(email);
                                                 databaseReference.child("users").child(uid).child("password").setValue(password);
                                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
