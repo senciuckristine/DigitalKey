@@ -48,6 +48,15 @@ public class ConnectionHC06 extends AppCompatActivity {
     private ConnectedThread MyConexionBT;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            btSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @SuppressLint({"MissingInflatedId", "MissingPermission"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
