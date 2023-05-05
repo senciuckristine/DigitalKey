@@ -92,6 +92,7 @@ void loop()
     {
         if((message & LOCK) == LOCK )
         {
+            ledState = HIGH;
             digitalWrite(ledPin,HIGH);
             
            
@@ -99,18 +100,19 @@ void loop()
         }
         if((message & UNLOCK) == UNLOCK)
         {
+          ledState = LOW;
             digitalWrite(ledPin,LOW);
             // Serial.println("Led is turned off\n");
            
         }
         if((message & GET_STATUS) == GET_STATUS)
         {
-          if(digitalRead(ledPin)==HIGH)
+          if(ledState == HIGH)
           {
              Serial.println(STATUS_LOCK);
           }
           else
-          if(digitalRead(ledPin)==LOW)
+          if(ledState == LOW)
           {
             Serial.println(STATUS_UNLOCK);
           }

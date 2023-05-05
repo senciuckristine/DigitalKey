@@ -62,6 +62,11 @@ public class ConnectionHC06 extends AppCompatActivity {
         mButtonLedControl.setVisibility(View.INVISIBLE);
         mButtonDisconnected.setVisibility(View.INVISIBLE);
         mCarImage.setImageResource(R.drawable.car);
+        byte[] message_STATUS_UNLOCK = Messages.createMessaje(Messages.messageType.STATUS_UNLOCK);
+        byte[] message_STATUS_LOCK = Messages.createMessaje(Messages.messageType.STATUS_LOCK);
+        byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
+        byte[] message_LOCK = Messages.createMessaje(Messages.messageType.LOCK);
+        byte[] message_UNLOCK = Messages.createMessaje(Messages.messageType.UNLOCK);
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDeveicesList = btAdapter.getBondedDevices();
@@ -92,8 +97,6 @@ public class ConnectionHC06 extends AppCompatActivity {
 
                 switch (msg.what) {
                     case MESSAGE_READ:
-                        byte[] message_STATUS_UNLOCK = Messages.createMessaje(Messages.messageType.STATUS_UNLOCK);
-                        byte[] message_STATUS_LOCK = Messages.createMessaje(Messages.messageType.STATUS_LOCK);
                         String arduinoMsg = msg.obj.toString(); // Read message from Arduino
                         arduinoMsg=arduinoMsg.replace("\r","").replace("\n","");
                         int arduinoMsgInt = Integer.parseInt(arduinoMsg);
@@ -136,7 +139,6 @@ public class ConnectionHC06 extends AppCompatActivity {
                 mCarImage.setVisibility(View.VISIBLE);
                 textViewInfo.setVisibility(View.VISIBLE);
                 onResume();
-                byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
                 String vv5 = Arrays.toString(message_GET_STATUS);
                 String vv4= vv5.replaceAll(" ","");
                 String[] vv1 =  vv4.substring(1, vv4.length() - 1).split(",");
@@ -167,8 +169,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                 String btnState = mButtonLedControl.getText().toString().toLowerCase();
                 switch (btnState) {
                     case "lock the car":
-                        byte[] message_LOCK = Messages.createMessaje(Messages.messageType.LOCK);
-                        String v5 = Arrays.toString(message_LOCK);
+                         String v5 = Arrays.toString(message_LOCK);
                         String v4 = v5.replaceAll(" ", "");
                         String[] v1 = v4.substring(1, v4.length() - 1).split(",");
 
@@ -190,8 +191,6 @@ public class ConnectionHC06 extends AppCompatActivity {
                         MyConexionBT.write(v2);
                         break;
                     case "unlock the car":
-                        byte[] message_UNLOCK = Messages.createMessaje(Messages.messageType.UNLOCK);
-
                         String v7 = Arrays.toString(message_UNLOCK);
                         String v8 = v7.replaceAll(" ", "");
                         String[] v9 = v8.substring(1, v8.length() - 1).split(",");
