@@ -22,44 +22,18 @@
         android:textSize="20sp"
         android:textColor="#000"
          />
-    <TextView
-        android:id="@+id/uid"
-        android:layout_marginLeft="90dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:gravity="top"
-        android:textSize="20sp"
-        android:textColor="#000"
-        />
     <ImageView
         android:id="@+id/bluetoothImg"
         android:layout_marginLeft="135dp"
         android:layout_width="100dp"
         android:layout_height="100dp" />
     <Button
-        android:id="@+id/ButtonOn"
+        android:id="@+id/ButtonOnOff"
         android:layout_marginLeft="85dp"
         android:minWidth="200dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Turn On"
-        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
-    <Button
-        android:id="@+id/ButtonOff"
-        android:layout_marginLeft="85dp"
-        android:minWidth="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Turn Off"
-        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
-    <Button
-        android:id="@+id/ButtonDiscoverable"
-        android:layout_marginLeft="85dp"
-        android:minWidth="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Discoverable"
         style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
     <Button
         android:id="@+id/ButtonDevices"
@@ -71,56 +45,13 @@
         android:text="Start DigitalKey"
         style="@style/TextAppearance.AppCompat.Widget.Button.Colored"
         tools:ignore="ExtraText" />
-    <ListView android:id="@+id/listView1" android:layout_height="70dp" android:layout_width="match_parent"></ListView>
 
-    <Button
-        android:id="@+id/ButtonConnect"
-        android:layout_marginLeft="85dp"
-        android:minWidth="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Connect to HC-06"
-        android:visibility="gone"
-        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
-    <Button
-        android:id="@+id/ButtonLedOn"
-        android:layout_marginLeft="85dp"
-        android:minWidth="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Turn Led On"
-        android:visibility="gone"
-        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
-    <Button
-        android:id="@+id/ButtonLedOff"
-        android:layout_marginLeft="85dp"
-        android:minWidth="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Turn Led off"
-        android:visibility="gone"
-        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
-    <Button
-        android:id="@+id/ButtonDisconnect"
-        android:layout_marginLeft="85dp"
-        android:minWidth="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Disconnect"
-        android:visibility="gone"
-        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"/>
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_height="180dp"
+        android:layout_width="match_parent">
+    </ListView>
 
-    <!--    <TextView-->
-<!--        android:scrollbars = "vertical"-->
-<!--        android:id="@+id/ShowBLEDevices"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="10dp"-->
-<!--        android:minWidth="200dp"-->
-<!--        android:text=""-->
-
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="#000"-->
-<!--         />-->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
