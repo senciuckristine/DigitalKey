@@ -283,7 +283,7 @@ public class BluetoothConnection extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if(device != null && device.getName() !=null) {
-                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                     databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();

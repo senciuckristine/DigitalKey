@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:hint="Mac Address"
-        android:imeOptions="actionDone"
+        android:imeOptions="actionNext"
         android:maxLines="1"
         android:paddingStart="20dp"
         android:paddingLeft="0dp"
