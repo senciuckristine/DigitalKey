@@ -223,6 +223,7 @@ public class BluetoothConnection extends AppCompatActivity {
                 }
             }
             }
+
         }
     };
 
