@@ -1,8 +1,6 @@
 package com.example.digitalkey.Protocol;
 
 public class Messages {
-
-
     public enum messageType {
         GET_STATUS,
         LOCK,
@@ -10,7 +8,6 @@ public class Messages {
         STATUS_LOCK,
         STATUS_UNLOCK
     }
-
     public static byte[] createMessaje(messageType type){
         byte[] content = new byte[4];
         switch(type){

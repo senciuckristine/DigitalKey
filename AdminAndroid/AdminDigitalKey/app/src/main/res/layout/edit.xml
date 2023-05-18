@@ -4,31 +4,13 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical">
-    <TextView
-        android:id="@+id/listofmacaddresses"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="List of mac addresses"
-        android:layout_gravity="center"
-        android:textColor="#000"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        />
-
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="231dp">
-
-    </ListView>
-
 
     <EditText
         android:id="@+id/macupdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:hint="Mac Address"
+        android:layout_marginTop="40dp"
+        android:hint="@string/mac_address_hint"
         android:imeOptions="actionNext"
         android:maxLines="1"
         android:paddingStart="20dp"
@@ -42,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="Car Model"
+        android:hint="@string/car_model_hint"
         android:imeOptions="actionDone"
         android:maxLines="1"
         android:paddingStart="20dp"
@@ -55,7 +37,7 @@
         android:id="@+id/updateBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add new Mac address for this user"
+        android:text="@string/add_new_mac_address_for_this_user"
         android:layout_marginTop="40dp"
         android:layout_marginRight="50dp"
         android:layout_marginLeft="50dp"
@@ -63,7 +45,24 @@
         android:textColor="@color/white"
         android:layout_marginBottom="30dp"
         />
+    <TextView
+        android:id="@+id/listofmacaddresses"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/list_of_mac_addresses"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
+        />
 
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+    </ListView>
     
 
 

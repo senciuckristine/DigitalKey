@@ -24,23 +24,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
     FirebaseAuth  mAuth;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
-    FirebaseUser user;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
-        // If you don't have res/menu, just create a directory named "menu" inside res
         getMenuInflater().inflate(R.menu.my_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.mybutton) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(), Login.class));
@@ -48,18 +45,14 @@ public class Register extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    public static boolean isValid(String email)
-    {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
 
-        Pattern pat = Pattern.compile(emailRegex);
-        if (email == null)
-            return false;
-        return pat.matcher(email).matches();
-    }
+        public static boolean isValid(CharSequence target) {
+            if (target == null) {
+               return false;
+             } else {
+                return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+            }
+        }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +72,7 @@ public class Register extends AppCompatActivity {
                 final String password = passwordEditText.getText().toString();
                 final String mac = macEditText.getText().toString();
                 final String carmodel = carModelEditText.getText().toString();
-                if(email.isEmpty() || mac.isEmpty() || password.isEmpty() || email == null || mac == null || password == null){
+                if(email.isEmpty() || mac.isEmpty() || password.isEmpty() || carmodel.isEmpty()){
                     Toast.makeText(Register.this, "Please complete every filed.",
                             Toast.LENGTH_SHORT).show();
                 }else if (password.length() < 6){
@@ -91,34 +84,28 @@ public class Register extends AppCompatActivity {
                 }else {
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(Register.this, "Account Created.",
                                                 Toast.LENGTH_SHORT).show();
                                         databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                                String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
                                                 databaseReference.child("users").child(uid).child("mac").child(mac).setValue(carmodel);
                                                 databaseReference.child("users").child(uid).child("email").setValue(email);
                                                 databaseReference.child("users").child(uid).child("password").setValue(password);
                                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                 startActivity(intent);
                                                 finish();
-
-
                                             }
-
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
 
                                             }
                                         });
                                     } else {
-                                        // If sign in fails, display a message to the user.
                                         Toast.makeText(Register.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
 

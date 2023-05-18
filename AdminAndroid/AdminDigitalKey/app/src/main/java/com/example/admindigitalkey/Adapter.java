@@ -1,4 +1,7 @@
 package com.example.admindigitalkey;
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
+import android.annotation.SuppressLint;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +35,7 @@ import com.orhanobut.dialogplus.ViewHolder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder>{
 
@@ -46,7 +50,6 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
     protected void onBindViewHolder(@NonNull PostViewHolder holder, int i, @NonNull Post post) {
         getRef(i).getKey();
         holder.email.setText(post.getEmail());
-       // holder.mac.setText(post.getMac());
         holder.password.setText(post.getPassword());
 
         holder.Edit.setOnClickListener(new View.OnClickListener() {
@@ -61,14 +64,14 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
                         .create();
 
                 View holderView = (LinearLayout) dialogPlus.getHolderView();
-
+                dialogPlus.show();
                 EditText updatemac = holderView.findViewById(R.id.macupdate);
                 EditText updatecarmodel = holderView.findViewById(R.id.carmodelupdate);
                 TextView textView = holderView.findViewById(R.id.listofmacaddresses);
+                textView.setText("List of mac addresses for: " + holder.email.getText().toString());
                 ListView Deviceslist = holderView.findViewById(R.id.listView1);
                 ArrayAdapter<String> arrayAdapter;
-                ArrayList arrayList ;
-                arrayList = new ArrayList<>();
+                ArrayList arrayList = new ArrayList<>(); ;
                 arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,arrayList);
                 Deviceslist.setAdapter(arrayAdapter);
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -78,7 +81,7 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         int index = 0;
-                        for(DataSnapshot ds : snapshot.child(getRef(i).getKey()).child("mac").getChildren()) {
+                        for(DataSnapshot ds : snapshot.child(Objects.requireNonNull(getRef(i).getKey())).child("mac").getChildren()) {
                             index++;
                             arrayList.add("Mac Address "+ index + ": " + ds.getValue(String.class) + " " + ds.getKey());
                             arrayAdapter.notifyDataSetChanged();
@@ -96,30 +99,30 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
                 Update.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                int index = 0;
-                                for(DataSnapshot ds : snapshot.child(getRef(i).getKey()).child("mac").getChildren()) {
-                                    index++;
-                                    arrayList.add("Mac Address "+ index + ": " + ds.getValue(String.class) + ds.getKey());
-                                    arrayAdapter.notifyDataSetChanged();
+                        if(!updatemac.getText().toString().isEmpty() || !updatecarmodel.getText().toString().isEmpty()) {
+                            databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int index = 0;
+                                    databaseReference.child("users").child(Objects.requireNonNull(getRef(i).getKey())).child("mac").child(updatemac.getText().toString()).setValue(updatecarmodel.getText().toString());
+                                    Toast.makeText(context, "A new MAC address was successfully added",
+                                            Toast.LENGTH_SHORT).show();
+                                    dialogPlus.dismiss();
                                 }
-                                index++;
-                                databaseReference.child("users").child(getRef(i).getKey()).child("mac").child(updatemac.getText().toString()).setValue(updatecarmodel.getText().toString());
-                                dialogPlus.dismiss();
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-
+                                }
+                            });
+                        }else{
+                            Toast.makeText(context, "Please fill all fields.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
                     }
                 });
-                dialogPlus.show();
+
             }
         });
 
@@ -136,7 +139,7 @@ public class Adapter extends FirebaseRecyclerAdapter<Post,Adapter.PostViewHolder
 
     public class PostViewHolder  extends RecyclerView.ViewHolder {
 
-        TextView email, mac,password,emailaddress,macaddress,passwordaddress;
+        TextView email,password,emailaddress,passwordaddress;
         ImageView Edit;
 
         public PostViewHolder(@NonNull View itemView) {

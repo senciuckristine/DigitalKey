@@ -24,17 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    // DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
 
-        }
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +33,13 @@ public class Login extends AppCompatActivity {
         final EditText emailTxt = findViewById(R.id.email);
         final EditText passwordTxt = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.loginBtn);
-
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null) {
+            Intent intent = new Intent(Login.this, MainActivity.class);
+            startActivity(intent);
+        }
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,15 +47,13 @@ public class Login extends AppCompatActivity {
                 final String password = passwordTxt.getText().toString();
 
                 if(email.isEmpty() || password.isEmpty()){
-                    Toast.makeText(Login.this,"Please enter your phone or password",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this,"Please enter your email or password",Toast.LENGTH_SHORT).show();
                 }else{
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                    if (task.isSuccessful() && email.equals("admindigitalkey@yahoo.com")) {
-                                        // Sign in success, update UI with the signed-in user's information
+                                    if (task.isSuccessful()) {
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         Toast.makeText(Login.this, "Login Successful.",
                                                 Toast.LENGTH_SHORT).show();
@@ -68,10 +61,8 @@ public class Login extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
                                     } else {
-                                        // If sign in fails, display a message to the user.
-                                        Toast.makeText(Login.this, "Login Failed.",
+                                         Toast.makeText(Login.this, "Login Failed.",
                                                 Toast.LENGTH_SHORT).show();
-
                                     }
                                 }
                             });

@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">AdminDigitalKey</string>
+    <string name="add_new_user">Add new User</string>
+    <string name="list_of_users">List of Users</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="login_here">Login Here</string>
+    <string name="email_form">Email:</string>
+    <string name="email_text">Email</string>
+    <string name="password_form">Password:</string>
+    <string name="password_text">Password</string>
+    <string name="add_a_new_user">Add a new user</string>
+    <string name="add_new_user_button">Add new User</string>
+    <string name="password_hint">Password</string>
+    <string name="car_model">Car Model</string>
+    <string name="mac_address">Mac Address</string>
+    <string name="email_hint">Email</string>
+    <string name="list_of_mac_addresses">List of mac addresses</string>
+    <string name="mac_address_hint">Mac Address</string>
+    <string name="car_model_hint">Car Model</string>
+    <string name="add_new_mac_address_for_this_user">Add new Mac address for this user</string>
 </resources>

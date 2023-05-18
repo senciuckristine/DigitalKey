@@ -58,7 +58,6 @@ import java.util.UUID;
 public class BluetoothConnection extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 0;
-    private static final int REQUEST_DISCOVER_BT = 1;
     TextView mStatusBluetooth;
     ImageView mBluetoothImage;
     Button mButtonOnOff, mButtonListOfDevices;
@@ -89,6 +88,7 @@ public class BluetoothConnection extends AppCompatActivity {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -131,16 +131,16 @@ public class BluetoothConnection extends AppCompatActivity {
             }
         });
         if (mBleAdapter == null) {
-            mStatusBluetooth.setText("Bluetooth is not available");
+            mStatusBluetooth.setText(R.string.Bluetooth_is_not_available);
         } else {
-            mStatusBluetooth.setText("Bluetooth is available");
+            mStatusBluetooth.setText(R.string.bluetooth_is_available);
         }
 
         if (mBleAdapter.isEnabled()) {
-            mButtonOnOff.setText("Turn Off");
+            mButtonOnOff.setText(R.string.turn_off);
             mBluetoothImage.setImageResource(R.drawable.ic_action_on);
         } else {
-            mButtonOnOff.setText("Turn On");
+            mButtonOnOff.setText(R.string.turn_on);
             mBluetoothImage.setImageResource(R.drawable.ic_action_off);
         }
 
@@ -181,8 +181,6 @@ public class BluetoothConnection extends AppCompatActivity {
             showToast("Scanning for your car");
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
                 mBleAdapter.startDiscovery();
-            } else {
-                showToast("You don't have the permission to search nearby devices");
             }
         } else {
             showToast("You need to turn on Bluetooth");
@@ -220,6 +218,9 @@ public class BluetoothConnection extends AppCompatActivity {
                     });
 
 
+                }else{
+                    Toast.makeText(getApplicationContext(), "Couldn't find nearby cars.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
             }
@@ -244,11 +245,11 @@ public class BluetoothConnection extends AppCompatActivity {
                         if (result.getResultCode() == RESULT_OK) {
                             mBluetoothImage.setImageResource(R.drawable.ic_action_on);
                             showToast("Bluetooth is On");
-                            mButtonOnOff.setText("Turn Off");
+                            mButtonOnOff.setText(R.string.turn_off);
                         } else {
                             mBluetoothImage.setImageResource(R.drawable.ic_action_off);
                             showToast("User denied to turn on");
-                            mButtonOnOff.setText("Turn On");
+                            mButtonOnOff.setText(R.string.turn_on);
                         }
                     }
                 }

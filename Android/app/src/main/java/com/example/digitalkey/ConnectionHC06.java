@@ -40,13 +40,11 @@ public class ConnectionHC06 extends AppCompatActivity {
     public static String address = null;
     private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
-    public boolean activar;
+    public boolean active;
     Handler bluetoothIn;
-    final int handlerState = 0;
-    Button mButtonConnectHC06,mButtonLedControl,mButtonDisconnected;
+     Button mButtonConnectHC06,mButtonLedControl,mButtonDisconnected;
     ImageView mCarImage;
-    private ConnectedThread MyConexionBT;
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://digitalkeylogin-default-rtdb.europe-west1.firebasedatabase.app/");
+    private ConnectedThread MyConnectionBT;
 
     @Override
     public void onPause() {
@@ -78,7 +76,6 @@ public class ConnectionHC06 extends AppCompatActivity {
         byte[] message_UNLOCK = Messages.createMessaje(Messages.messageType.UNLOCK);
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
-        @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDeveicesList = btAdapter.getBondedDevices();
 
         String lastword = null;
         Bundle extras = getIntent().getExtras();
@@ -89,48 +86,39 @@ public class ConnectionHC06 extends AppCompatActivity {
 
 
         bluetoothIn = new Handler(Looper.getMainLooper()) {
-
             public void handleMessage(Message msg){
+                if (msg.what == MESSAGE_READ) {
+                    String arduinoMsg = msg.obj.toString();
+                    arduinoMsg = arduinoMsg.replace("\r", "").replace("\n", "");
+                    int arduinoMsgInt = Integer.parseInt(arduinoMsg);
+                    String arduinoMsgBinary = Integer.toBinaryString(arduinoMsgInt);
 
-                switch (msg.what) {
-                    case MESSAGE_READ:
-                        String arduinoMsg = msg.obj.toString(); // Read message from Arduino
-                        arduinoMsg=arduinoMsg.replace("\r","").replace("\n","");
-                        int arduinoMsgInt = Integer.parseInt(arduinoMsg);
-                        String arduinoMsgBinary = Integer.toBinaryString(arduinoMsgInt);
+                    byte byte1 = Utils.hexToByte(arduinoMsgBinary.substring(0, 2));
+                    byte byte2 = Utils.hexToByte(arduinoMsgBinary.substring(2, 4));
+                    byte byte3 = Utils.hexToByte(arduinoMsgBinary.substring(4, 6));
+                    byte byte4 = Utils.hexToByte(arduinoMsgBinary.substring(6, 8));
 
-                        byte byte1 = Utils.hexToByte(arduinoMsgBinary.substring(0,2));
-                        byte byte2 = Utils.hexToByte(arduinoMsgBinary.substring(2,4));
-                        byte byte3 = Utils.hexToByte(arduinoMsgBinary.substring(4,6));
-                        byte byte4 = Utils.hexToByte(arduinoMsgBinary.substring(6,8));
-
-                        // compare the first 3 bytes as first action
-                        if(byte1 == message_STATUS_LOCK[0] && byte2 == message_STATUS_LOCK[1]
-                                && byte3 == message_STATUS_LOCK[2]){
-                            // if match then compare the last byte
-                            if(byte4 == message_STATUS_LOCK[3]){ //lock status
-                                // lock command received
-                                // schimb mesajul pe buton in comanda toggle
-                                textViewInfo.setText("Arduino Message : Car is Locked ");
-                                mButtonLedControl.setText("Unlock the car");
-                                mCarImage.setImageResource(R.drawable.carlock);
-                            }else if(byte4 == message_STATUS_UNLOCK[3]){    //unlock status
-                                // unlock command received
-                                // schimb mesajul pe buton in comanda toggle
-                                textViewInfo.setText("Arduino Message : Car is Unlocked");
-                                mButtonLedControl.setText("Lock the car");
-                                mCarImage.setImageResource(R.drawable.carunlock);
-                            }
+                    if (byte1 == message_STATUS_LOCK[0] && byte2 == message_STATUS_LOCK[1]
+                            && byte3 == message_STATUS_LOCK[2]) {
+                        if (byte4 == message_STATUS_LOCK[3]) {
+                            textViewInfo.setText(R.string.ard_message_locked);
+                            mButtonLedControl.setText(R.string.unlock_car);
+                            mCarImage.setImageResource(R.drawable.carlock);
+                        } else if (byte4 == message_STATUS_UNLOCK[3]) {
+                            textViewInfo.setText(R.string.ard_message_unlock);
+                            mButtonLedControl.setText(R.string.lock_car);
+                            mCarImage.setImageResource(R.drawable.carunlock);
                         }
+                    }
                 }
             }
         };
         mButtonConnectHC06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activar = true;
+                active = true;
                 mButtonConnectHC06.setVisibility(View.INVISIBLE);
-                mButtonDisconnected.setText("DISCONECT");
+                mButtonDisconnected.setText(R.string.disconnect);
                 mButtonLedControl.setVisibility(View.VISIBLE);
                 mButtonDisconnected.setVisibility(View.VISIBLE);
                 mCarImage.setVisibility(View.VISIBLE);
@@ -155,7 +143,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                     }
                 }
                 String vv2 = Utils.convertStringArrayToString(vv1);
-                MyConexionBT.write(vv2);
+                MyConnectionBT.write(vv2);
 
             }
         });
@@ -185,7 +173,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                             }
                         }
                         String v2 = Utils.convertStringArrayToString(v1);
-                        MyConexionBT.write(v2);
+                        MyConnectionBT.write(v2);
                         break;
                     case "unlock the car":
                         String v7 = Arrays.toString(message_UNLOCK);
@@ -207,11 +195,9 @@ public class ConnectionHC06 extends AppCompatActivity {
                             }
                         }
                         String v10 = Utils.convertStringArrayToString(v9);
-                        MyConexionBT.write(v10);
+                        MyConnectionBT.write(v10);
                         break;
                 }
-                byte[] message_GET_STATUS = Messages.createMessaje(Messages.messageType.GET_STATUS);
-
 
                 String vv5 = Arrays.toString(message_GET_STATUS);
                 String vv4= vv5.replaceAll(" ","");
@@ -232,7 +218,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                     }
                 }
                 String vv2 = Utils.convertStringArrayToString(vv1);
-                MyConexionBT.write(vv2);
+                MyConnectionBT.write(vv2);
             }
 
         });
@@ -244,7 +230,7 @@ public class ConnectionHC06 extends AppCompatActivity {
                 try{
 
                     btSocket.close();
-                    mButtonConnectHC06.setText("CONNECT TO HC06");
+                    mButtonConnectHC06.setText(R.string.connect_to_car);
                     mButtonConnectHC06.setVisibility(View.VISIBLE);
                     mButtonLedControl.setVisibility(View.INVISIBLE);
                      mButtonDisconnected.setVisibility(View.INVISIBLE);
@@ -274,31 +260,24 @@ public class ConnectionHC06 extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     public void onResume() {
         super.onResume();
-
-
-        if (activar) {
+        if (active) {
             BluetoothDevice device = btAdapter.getRemoteDevice(address);
-
             try {
                 btSocket = createBluetoothSocket(device);
-
             } catch (IOException e) {
                 Toast.makeText(getBaseContext(), "Socket connection failed", Toast.LENGTH_LONG).show();
             }
-            // Establece la conexión con el socket Bluetooth.
             try {
                 btSocket.connect();
             } catch (IOException e) {
                 try {
                     btSocket.close();
                 } catch (IOException e2) {
-
                 }
             }
-            MyConexionBT = new ConnectedThread(btSocket);
-            MyConexionBT.start();
+            MyConnectionBT = new ConnectedThread(btSocket);
+            MyConnectionBT.start();
         }
-
     }
 
     private class ConnectedThread extends Thread {

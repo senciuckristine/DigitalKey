@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">DigitalKey</string>
+    <string name="login_here">Login Here</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="Bluetooth_is_not_available">Bluetooth is not available</string>
+    <string name="bluetooth_is_available">Bluetooth is available</string>
+    <string name="turn_off">Turn Off</string>
+    <string name="turn_on">Turn On</string>
+    <string name="disconect">DISCONECT</string>
+    <string name="disconNect">DISCONNECT</string>
+    <string name="disconnect">DISCONNECT</string>
+    <string name="ard_message_locked">Arduino Message : Car is Locked </string>
+    <string name="ard_message_unlock">Arduino Message : Car is Unlocked</string>
+    <string name="unlock_car">Unlock the car</string>
+    <string name="lock_car">Lock the car</string>
+    <string name="connect_to_car">CONNECT TO YOUR CAR</string>
 </resources>

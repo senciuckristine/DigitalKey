@@ -19,7 +19,7 @@ STATUS + PAYLOAD
 10 => STATUS_LOCK
 11 => STATUS_UNLOCK
 */
-const unsigned int MAX_MESSAGE_LENGTH = 9;
+
 int ledPin = 7;
 int touchPin = 8;
 unsigned long previousMillis = 0;
@@ -44,8 +44,7 @@ void setup() {
 void loop() 
 {
   elapsedMillis = millis() - previousMillis;
-  //if sensor is touched and the elapsed time is bigger than the given debounce time
-  
+
  if(digitalRead(touchPin)==HIGH && elapsedMillis > debounceTime)
   {
     if(ledState == HIGH)
@@ -60,50 +59,39 @@ void loop()
     }
     digitalWrite(ledPin,ledState);
 
-     //store the current millis on the previous millis
     previousMillis = millis();
   }
   
-  //Check to see if anything is available in the serial receive buffer
+
   while (Serial.available() > 0)
   {
-    //Create a place to hold the incoming message
-    static char stringMessage[MAX_MESSAGE_LENGTH];
     static unsigned int message_pos = 0, message=0;
-    int bitReade;
- //calculate the elapsed seconds
-    //Read the next available byte in the serial receive buffer
+    int bitRead;
+ 
     char inByte = Serial.read();
 
-    //Message coming in (check not terminating character) and guard for over message size
     if (message_pos < 8)
     {
-      //Add the incoming byte to our message
-      stringMessage[message_pos] = inByte;
-      bitReade = inByte  - '0';
-      if(bitReade == 1)
+     
+      bitRead = inByte  - '0';
+      if(bitRead == 1)
       {
           message += 1<<(7-message_pos);
       }
       message_pos++;
     }
-    //Full message received...
+   
     if(message_pos == 8)
     {
         if((message & LOCK) == LOCK )
         {
             ledState = HIGH;
             digitalWrite(ledPin,HIGH);
-            
-           
-            // Serial.println("Led is turned on\n");
         }
         if((message & UNLOCK) == UNLOCK)
         {
           ledState = LOW;
             digitalWrite(ledPin,LOW);
-            // Serial.println("Led is turned off\n");
-           
         }
         if((message & GET_STATUS) == GET_STATUS)
         {
@@ -117,7 +105,6 @@ void loop()
             Serial.println(STATUS_UNLOCK);
           }
         }
-      //Reset for the next message
       message_pos = 0;
       message = 0;
     }
